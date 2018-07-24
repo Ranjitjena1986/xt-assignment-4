@@ -3,11 +3,14 @@ import './styles/main.scss';
 import jQuery from '../node_modules/jquery/dist/jquery';
 import '../node_modules/jquery-ui/ui/widgets/sortable';
 import '../node_modules/bootstrap/dist/js/bootstrap';
+import { store } from './store/store';
 
-window.boardObj = JSON.parse(localStorage.getItem("board")) || {};
+
+window.boardObj = {};
 
 import { Board } from './controller/board';
 import { List } from './controller/list';
+
 
 const getUrlParameter = (name) => {
     name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
@@ -15,12 +18,29 @@ const getUrlParameter = (name) => {
     var results = regex.exec(location.search);
     return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
 };
+let board = new Board(jQuery); 
+let path = getUrlParameter('boardname');
+let list = new List(jQuery,path);
+let pathname = window.location.pathname;
 
-window.onload = () => {
-    let pathname = window.location.pathname;
+store.subscribe(()=>{
+    console.log("Store",store.getState());
+    window.boardObj = store.getState();
+    console.log("Store",window.boardObj);
     switch (pathname) {
-        case '/':
-            let board = new Board(jQuery);
+        case '/': 
+            board.loadBoards();
+        break;
+        case '/board.html':
+        break;
+    }    
+}); 
+
+let boardObj = JSON.parse(localStorage.getItem("board"));
+store.dispatch({type: 'INTIALIZE_BOARD', boardObj});
+    
+    switch (pathname) {
+        case '/':                    
             window.getBoardObj = () => {
                 board.openBoardWindow();
             }
@@ -36,23 +56,23 @@ window.onload = () => {
                 }
             };
 
-            window.loadList= (id) =>{
-                window.location = "./board.html?boardid=" + id;
+            window.loadList= (key) =>{
+                window.location = "./board.html?boardname=" + key;
             }
 
-            window.editList = (id,value)=>{
-                board.editList(id,value);
+            window.editList = (key)=>{
+                board.editList(key);
             }
-
-            board.loadBoards();  
+            
             jQuery('#loginModal').on('hidden.bs.modal', function (e) {
                 board.cleanMemory();
-            });          
+            }); 
+                   
         break;
         case '/board.html':
-            let id = getUrlParameter('boardid');
-            let list = new List(jQuery,path);           
+           
 
+            jQuery("#boardtitle").html(path);
             window.addList  = () => {
                 list.addList();
             }           
@@ -100,7 +120,7 @@ window.onload = () => {
                 list.cleanCard(cardkey);
             }
 
-            //list.createLists();
+            list.createLists();
             jQuery("#listboard" ).sortable({ 
                 connectWith: "#listboard", 
                 handle: ".list-header"               
@@ -124,7 +144,10 @@ window.onload = () => {
         default:
         break;
     }
-};
+
+
+
+
 
 
 

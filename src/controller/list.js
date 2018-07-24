@@ -1,6 +1,5 @@
 import { getLists } from '../view/boards/list/list';
 import { getCardList } from '../view/boards/list/cardlist';
-import { BoardService } from "../service/board.service";
 import { ListService } from '../service/list.service';
 
 
@@ -11,14 +10,7 @@ export class List {
         this.path = path;
         this.oldListName = "";
         this.oldCardName = "";
-        this.boardService = new BoardService();
-        this.listService = new ListService();
-        this.boardService.getBoards(path).then(res=>{
-            jQuery("#boardtitle").html(res.boardname);
-        }),error=> {
-            console.log(error);
-        };
-       
+        this.listService = new ListService();        
     }
 
     addList() {
@@ -124,12 +116,6 @@ export class List {
     }
 
     createLists() {
-        this.listService.getList(this.path)
-        .then(res=>{
-
-        }),error => {
-
-        };
         let lists = "";
         for (let keys of Object.keys(window.boardObj['' + this.path])) {
             let keyid = keys.replace(" ","-");

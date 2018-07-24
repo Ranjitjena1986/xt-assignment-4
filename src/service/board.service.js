@@ -1,80 +1,32 @@
-export class BoardService {
+import { store } from "../store/store";
 
-    getBoards(id) {
-        let promise = new Promise((resolve, reject) => {
-            fetch("http://localhost:3004/boards/"+id, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Cache-Control': 'no-cache'
-                },
-                method: 'get'               
-            }).then(
-                res => res.json()
-            ).then(json => {
-                resolve(json);
-            }, error => {
-                reject(new ResponseError('Service Error' + error.message));
-            })
-        });
-        return promise;
+export class BoardService {
+    
+    getBoards() {
+        return window.boardObj;
     }
 
-    addBoard(obj) {
-        let promise = new Promise((resolve, reject) => {
-            fetch("http://localhost:3004/boards/", {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Cache-Control': 'no-cache'
-                },
-                method: 'POST',
-                body: JSON.stringify(obj)               
-            }).then(
-                res => res.json()
-            ).then(json => {
-                resolve(json);
-            }, error => {
-                reject(new ResponseError('Service Error' + error.message));
-            })
-        });
-        return promise;
+    addBoard(boardName) {
+        window.boardObj['' + boardName] = {};
+        this.saveInStorage();
     }
 
     deleteBoard(id) {
-        let promise = new Promise((resolve, reject) => {
-            fetch("http://localhost:3004/boards/"+id, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Cache-Control': 'no-cache'
-                },
-                method: 'DELETE'
-                         
-            }).then(res => {
-                resolve(res);
-            }, error => {
-                reject(new ResponseError('Service Error' + error.message));
-            })
-        });
-        return promise;
+        delete window.boardObj['' + id];
+        this.saveInStorage();
+        
     }
 
-    updateBoard(id,obj) {
-        let promise = new Promise((resolve, reject) => {
-            fetch("http://localhost:3004/boards/"+id, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Cache-Control': 'no-cache'
-                },
-                method: 'PUT',
-                body: JSON.stringify(obj)               
-            }).then(
-                res => res.json()
-            ).then(json => {
-                resolve(json);
-            }, error => {
-                reject(new ResponseError('Service Error' + error.message));
-            })
-        });
-        return promise;
+    updateBoard(id,boardName) {
+        let data = window.boardObj['' + id];
+        window.boardObj['' + boardName] = {};
+        window.boardObj['' + boardName] = data;  
+        this.deleteBoard(id);   
+        this.saveInStorage();
     }
+
+    saveInStorage(){
+        localStorage.setItem("board", JSON.stringify(window.boardObj));  
+    }   
 
 }

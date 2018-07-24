@@ -7,8 +7,9 @@ export class Board {
     constructor(jQuery) {
         this.jQuery = jQuery;
         this.currentKey = "";
-        this.boardService = new BoardService();
+        this.boardService = new BoardService();        
     }
+   
 
     openBoardWindow() {
         this.jQuery("#loginModal").modal();
@@ -26,26 +27,13 @@ export class Board {
             if (objKeys.indexOf(boardName) === -1) {
                 this.jQuery('#boardname').val('');
                 this.jQuery("#boardHelp").addClass("d-none");
-                let obj = {
-                    "boardname": boardName
-                };                
                 if(this.currentKey !==""){                    
-                    this.boardService.updateBoard(this.currentKey,obj)
-                    .then(res => {
-                        this.loadBoards();
-                    }), error => {
-                        console.log(error);
-                    };
+                    this.boardService.updateBoard(this.currentKey, boardName);
                     this.currentKey = "";
-                    this.jQuery('#loginModal').modal('hide');
                 }else{
-                    this.boardService.addBoard(obj)
-                    .then(res => {
-                        window.location = "./board.html?boardid=" + res.id;
-                    }), error => {
-                        console.log(error);
-                    };
-                }
+                    this.boardService.addBoard(boardName);
+                }                
+                window.location = "./board.html?boardname=" + boardName;
             } else {
                 this.jQuery("#boardHelp").html(boardName + ' board already exist,try another name!');
                 this.jQuery("#boardHelp").removeClass("d-none");
@@ -54,36 +42,29 @@ export class Board {
     }
 
     loadBoards() {
-        let boards = "";
-        this.jQuery('#boards').html('');
-        let board = this.boardService.getBoards('');
-        board.then(res => {
-            for (let key in res) {
-                boards += getBoard(key, res);
-            }
-            boards += `<div class="col-md-3 mr-1 mt-1 py-2 board-color" onclick="getBoardObj()">Add Board</div>`;
-            this.jQuery('#boards').html(boards);
-        }), error => {
-            console.log(error);
-        };
+        let boardHtml = "";
+        this.jQuery('#boards').html('');    
+        for (let keys of Object.keys(window.boardObj)) {
+            boardHtml += getBoard(keys);
+        }
+        boardHtml += `<div class="col-md-3 mr-1 mt-1 py-2 board-color" onclick="getBoardObj()">Add Board</div>`;
+        this.jQuery('#boards').html(boardHtml);
     }
 
-    deleteBoard(id) {
-        this.boardService.deleteBoard(id)
-            .then(res => {
-                this.loadBoards();
-            }), error => {
-                console.log(error);
-            };
-    }
+    deleteBoard(id){
+        //delete window.boardObj[''+key];
+        //localStorage.setItem("board", JSON.stringify(window.boardObj));
+        this.boardService.deleteBoard(id);
+        //this.loadBoards();
+    }   
 
-    editList(id,value) {
-        this.currentKey = id;
+    editList(key){
+        this.currentKey = key;
         this.openBoardWindow();
-        this.jQuery('#boardname').val(value);
+        this.jQuery('#boardname').val(key);
     }
 
-    cleanMemory() {
-        this.currentKey = "";
+    cleanMemory(){
+        this.currentKey = ""; 
     }
 }
