@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="./src/images/mg-favicon.png">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css" integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt" crossorigin="anonymous">
+
+    <title>trello</title>
+    <link rel="stylesheet" href="./dist/styles.css">
+</head>
+
+<body>
+    <header>
+        <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+            <a class="navbar-brand" href="./">Trello</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse"
+                aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="./">Home
+                            <span class="sr-only">(current)</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+    <div class="container mt-6 px-2">
+        <div class="row">            
+            <div class="col-12 col-md-12 px-4">
+                <div class="row">
+                    <div class="col-12 mr-1 py-3">
+                        <h4>Board :
+                            <span id="boardtitle"></span>
+                        </h4>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 col-md-3 mr-1 mt-1 py-3 board-color" id="listid" onclick="addList()">
+                        Add List
+                    </div>
+                    <div class="col-12 col-md-5 py-2 board-color d-none" id="addlist">
+                        <input type="text" class="form-control" id="listtitle" aria-describedby="listtitle" placeholder="Enter List title" data-toggle="tooltip"
+                            data-placement="right" title="Enter List title">
+                        <small id="listHelp" class="form-text text-danger d-none">Please enter List title.</small>
+                        <button type="button" class="btn btn-primary mt-1" id="savelist" onclick="saveList()">Add List</button>
+                        <button type="button" class="close pt-2" data-dismiss="alert" aria-label="Close" onclick="closeList()">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="row mt-2" id="listboard">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="./dist/bundle.js"></script>
+    
+</body>
+
+</html>

@@ -1,0 +1,33 @@
+{
+  "boards": [
+    {
+      "id": 1,
+      "boardname": "board1"
+    },
+    {
+      "boardname": "board2",
+      "id": 2
+    },
+    {
+      "boardname": "board3",
+      "id": 3
+    }
+  ],
+  "lists": [
+    {
+      "id": 1,
+      "listname": "List1",
+      "board_id": "1"
+    },
+    {
+      "id": 2,
+      "listname": "List2",
+      "board_id": "1"
+    },
+    {
+      "id": 3,
+      "listname": "List3",
+      "board_id": "2"
+    }
+  ]
+}
