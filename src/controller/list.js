@@ -1,6 +1,8 @@
 import { getLists } from '../view/boards/list/list';
 import { getCardList } from '../view/boards/list/cardlist';
 import { ListService } from '../service/list.service';
+import { BoardService } from "../service/board.service";
+import { CardService } from '../service/card.service';
 
 
 export class List {
@@ -10,7 +12,9 @@ export class List {
         this.path = path;
         this.oldListName = "";
         this.oldCardName = "";
-        this.listService = new ListService();        
+        this.listService = new ListService();  
+        this.boardService = new BoardService(); 
+        this.cardService = new CardService();          
     }
 
     addList() {
@@ -35,28 +39,25 @@ export class List {
             this.jQuery("#listHelp").html('Please enter list title.');
             this.jQuery("#listHelp").removeClass("d-none");
         } else {
-            let objKeys = Object.keys(window.boardObj['' + this.path]);
+            let boardObj = this.boardService.getBoards();
+            let objKeys = Object.keys(boardObj['' + this.path]);
             if (objKeys.indexOf(listtitle) === -1) {
                 this.jQuery('#listtitle').val('');
                 this.jQuery("#listHelp").addClass("d-none");
                 this.closeList();
                 if(this.oldListName!==""){
-                    let data = window.boardObj['' + this.path][''+this.oldListName];
-                    window.boardObj['' + this.path]['' + listtitle] = {};
-                    window.boardObj['' + this.path]['' + listtitle] =data;
-                    delete window.boardObj['' + this.path][''+this.oldListName];
+                    this.listService.updateList(this.path,this.oldListName,listtitle);
                     this.cancelList();
                     this.oldListName = "";
                 }else{
-                    window.boardObj['' + this.path]['' + listtitle] = {};
+                   this.listService.addList(this.path,listtitle);
                 }
-                localStorage.setItem("board", JSON.stringify(window.boardObj));
+
             } else {
                 this.jQuery("#listHelp").html(listtitle + ' list title already exist,try another title!');
                 this.jQuery("#listHelp").removeClass("d-none");
             }
         }
-        this.createLists();
     }
 
     addCard(key) {
@@ -81,45 +82,33 @@ export class List {
             this.jQuery("#cardHelp-" + key).html('Please enter card.');
             this.jQuery("#cardHelp-" + key).removeClass("d-none");
         } else {
-            var objKeys = Object.keys(window.boardObj['' + this.path]['' + key]);
+            let boardObj = this.boardService.getBoards();
+            var objKeys = Object.keys(boardObj['' + this.path]['' + key]);
             if (objKeys.indexOf(card) === -1) {
                 this.jQuery('#card-text-' + key).val('');
                 this.closeCard(key)
                 this.jQuery("#cardHelp-" + key).addClass("d-none");
                 if(this.oldCardName===''){
-                    window.boardObj['' + this.path]['' + key]['' + card] = {};
+                    this.cardService.addCard(this.path,key,card);
                 }else{
-                    let data = window.boardObj['' + this.path]['' +key]['' + this.oldCardName];
-                    window.boardObj['' + this.path]['' + key]['' + card] = {};
-                    window.boardObj['' + this.path]['' + key]['' + card] = data;
-                    delete window.boardObj['' + this.path]['' +key]['' + this.oldCardName];
+                    this.cardService.updateCard(this.path,key,this.oldCardName,card);
                     cleanCard(this.oldCardName);
                     this.oldCardName = "";
                 }
-                localStorage.setItem("board", JSON.stringify(window.boardObj));
             } else {
                 this.jQuery("#cardHelp-" + key).html(card + ' already exist,try another title!');
                 this.jQuery("#cardHelp-" + key).removeClass("d-none");
             }
         }
-        this.createCards(card, key);
     }
+    
 
-    createCards(id, list) {
-        let cards = getCardList(this.path,list);
-        let listid = list.replace(" ", "-");
-        if (id === '') {
-            return cards;
-        } else {
-            this.jQuery('#cards-' + listid).html(cards);
-        }
-    }
-
-    createLists() {
+    createLists(boards) {
+        console.log(boards);
         let lists = "";
-        for (let keys of Object.keys(window.boardObj['' + this.path])) {
+        for (let keys of Object.keys(boards[''+this.path])) {
             let keyid = keys.replace(" ","-");
-            lists += getLists(this.path, keys, keyid);
+            lists += getLists(this.path, keys, keyid,boards);
         }        
         this.jQuery('#listboard').html(lists);
     }
@@ -138,10 +127,8 @@ export class List {
         this.oldListName = "";
     }
 
-    deleteList(key){
-        delete window.boardObj['' + this.path]['' + key];
-        localStorage.setItem("board", JSON.stringify(window.boardObj));
-        this.createLists();
+    deleteList(key){        
+       this.listService.deleteList(this.path,key);
     }
 
     editCard(cardkey){
@@ -161,12 +148,7 @@ export class List {
     dragdrop(dropid, dragid){
         let dropDataList = document.getElementById(dropid).getAttribute('data-list');
         let dragList = document.getElementById(dragid).getAttribute('data-list');
-        let dragCard = document.getElementById(dragid).getAttribute('data-card');
-        
-        window.boardObj[''+this.path][''+dropDataList][''+dragCard] = {};
-        delete window.boardObj[''+this.path][''+dragList][''+dragCard];
-        
-        localStorage.setItem("board", JSON.stringify(window.boardObj));
-        this.createLists();
+        let dragCard = document.getElementById(dragid).getAttribute('data-card');        
+        this.cardService.dragdropUpdate(this.path,dropDataList,dragList,dragCard);        
     }
 }

@@ -12,7 +12,7 @@ export const getCard = (key,keyid,list,listid) => {
     <div id="edit-card-${key}" class="row d-none">
         <div class="col-12">
             <textarea class="form-control" id="edit-card-text-${key}" rows="2"></textarea>
-            <button type="button" class="btn btn-primary mt-1" id="savecard" onclick="saveCard('${list}')">Add Card</button>
+            <button type="button" class="btn btn-primary mt-1" id="savecard" onclick="saveCard('${list}')">Save Card</button>
             <button type="button" class="close pt-2" data-dismiss="alert" aria-label="Close" onclick="cleanCard('${key}')">
                 <span aria-hidden="true">&times;</span>
             </button>

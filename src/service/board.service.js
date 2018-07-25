@@ -3,30 +3,35 @@ import { store } from "../store/store";
 export class BoardService {
     
     getBoards() {
-        return window.boardObj;
+        return store.getState();
     }
 
     addBoard(boardName) {
-        window.boardObj['' + boardName] = {};
-        this.saveInStorage();
+        let obj = {};
+        obj[boardName] = {}; 
+        store.dispatch({type: 'ADD_BOARD', obj});
     }
 
     deleteBoard(id) {
-        delete window.boardObj['' + id];
-        this.saveInStorage();
-        
+        let obj = store.getState();
+        delete obj['' + id];    
+        store.dispatch({type: 'DELETE_BOARD', obj});    
     }
 
     updateBoard(id,boardName) {
-        let data = window.boardObj['' + id];
-        window.boardObj['' + boardName] = {};
-        window.boardObj['' + boardName] = data;  
-        this.deleteBoard(id);   
-        this.saveInStorage();
+        let obj = store.getState();
+        let data = obj['' + id];
+        obj['' + boardName] = {};
+        obj['' + boardName] = data;       
+        delete obj['' + id];         
+        store.dispatch({type: 'UPDATE_BOARD', obj});
     }
 
-    saveInStorage(){
-        localStorage.setItem("board", JSON.stringify(window.boardObj));  
-    }   
+    setData(boards){
+        localStorage.setItem("board", JSON.stringify(boards));
+    }
 
+    getData(){
+        return localStorage.getItem("board");
+    }
 }
