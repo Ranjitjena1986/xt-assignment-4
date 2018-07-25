@@ -1,5 +1,4 @@
-export const getBoard = (keys) => {
-   return `<div class=" col-12 col-md-3 mr-1 mt-1 py-2 btn-primary ">
+export const getBoard = keys => `<div class=" col-12 col-md-3 mr-1 mt-1 py-2 btn-primary ">
     <div class="row">
         <div onclick="loadList('${keys}')" class="col-8 pointer">${keys}</div>
         <div onclick="editList('${keys}')" class="col-2 pointer"><i class="far fa-edit"></i></div>
@@ -8,4 +7,3 @@ export const getBoard = (keys) => {
         </button>
     </div>                 
     </div>`;
-};

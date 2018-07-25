@@ -1,5 +1,4 @@
-export const getCard = (key,keyid,list,listid) => {
-    return `<div class="my-1 list-card px-1 py-1" id="drag-${keyid}-${listid}" data-list="${list}" data-card="${key}" draggable="true" ondragstart="drag(event)">
+export const getCard = (key, keyid, list, listid) => `<div class="my-1 list-card px-1 py-1" id="drag-${keyid}-${listid}" data-list="${list}" data-card="${key}" draggable="true" ondragstart="drag(event)">
     <div id="card-${key}" class="row">
         <div class="col-9 card-head"  type="card" data-list="${list}" data-card="${key}" id="id-${listid}-${keyid}">
              ${key}
@@ -19,4 +18,3 @@ export const getCard = (key,keyid,list,listid) => {
         </div>
     </div>              
 </div>`;
-};

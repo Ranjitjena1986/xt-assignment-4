@@ -1,8 +1,8 @@
-import { getCardList } from "./cardlist";
+import { getCardList } from './cardlist';
 
-export const getLists = (path, keys, keyid,boards) => {
-    let cards = getCardList(path, keys,boards);
-    return `<div class="col-12 col-md-3 list py-2 mr-3 mt-3">
+export const getLists = (path, keys, keyid, boards) => {
+  const cards = getCardList(path, keys, boards);
+  return `<div class="col-12 col-md-3 list py-2 mr-3 mt-3">
     <div class="list-header col-12 pl-0 pr-0" id="header-${keys}">
         <div class="row" id="boardlist-${keys}">
             <h4 class="col-8">${keys}</h4>
